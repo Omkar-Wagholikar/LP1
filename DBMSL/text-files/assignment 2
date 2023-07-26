@@ -1,3 +1,17 @@
+Assignment No 2B  
+Use the tables created in assignment no 2 and execute the following queries:  
+1. Insert at least 10 records in the Student  table and insert other tables accordingly.
+2. Display all students details with branch ‘Computer ‘and ‘It’ and student name
+    starting with  'a' or 'd'.  
+3. list the number of different companies.(use of distinct)  
+4. Give 15% increase in fee of the Training  whose joining year is 2019.
+5. Delete Student details having CGPA score less than 7.  
+6. Find the names of companies belonging to pune or Mumbai  
+7. Find the student name who joined training in  1-1-2019 as well as in 1-1-2021  
+8. Find the student name  having maximum CGPA score and names of students  having CGPA score between  7 to 9 .
+9. Display all Student  name with T_id  with decreasing order of Fees
+10. Display PCompany name, S_name ,location and Package with Package  30K, 40K and 50k 
+
 ===========================
 
 create table student(sid int, did int, tid int, sname varchar(20), cgpa int, branch varchar(20), dob date, doj date, primary key(tid));
@@ -33,7 +47,6 @@ insert into placements
 (5, 'g', 50000, 'Nashik'),
 (6, 'h', 606000, 'Nashik');
 
-
 ===========================
 
 
@@ -61,6 +74,10 @@ select * from student where (branch = 'COMP' OR branch = 'IT') and (sname like "
 select distinct pname from placements;
 
 ===========================
+4.
+update train set tfee = 1.15 * tfee where tyear = '2019-10-1';
+===========================
+
 5.
 delete from student where cgpa<7;
 
@@ -68,23 +85,27 @@ delete from student where cgpa<7;
 6.
 select * from placements where loc = 'Pune' or loc = 'Mumbai';
 
+===========================
 7.
 select sname from student where doj = '2019-1-1' or doj = '2021-1-1';
 
+===========================
 8. 
 a:
 select sname from student where cgpa = (select max(cgpa) from student);
 
 b:
- select sname from student where cgpa > 6.9 and cgpa < 9.1;
+select sname from student where cgpa > 6.9 and cgpa < 9.1;
 
+===========================
 9. 
 select s.sname, t.tid from student s join train t on s.tid = t.tid order by t.tfee desc;
 
+select s.sname, t.tfee, t.tid from student s, train t where (s.tid = t.tid) order by t.tfee desc;
+
+===========================
 10.
 
-
-
-
-
-
+select  p.pname, s.sname, p.loc, p.package, t.tid from student s, train t, placements p where (s.tid = t.tid) and (t.tcname = p.pname) and (p.package in (30000, 40000, 50000));
+ 
+select p.pname, s.sname, p.loc, p.package from placements p join student s where p.did = s.did having p.package = 30000 or p.package = 40000 or p.package = 50000 order by p.package;
