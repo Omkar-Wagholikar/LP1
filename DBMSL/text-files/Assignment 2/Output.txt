@@ -1,0 +1,204 @@
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 22
+Server version: 8.0.34 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use 31282db;
+Database changed
+mysql> # Table Creations:
+mysql> create table student(sid int, did int, tid int, sname varchar(20), cgpa int, branch varchar(20), dob date, primary key(tid));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table placements(did int, pname varchar(20), package int, loc varchar(200), primary key(pname));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table train(tid int, tcname varchar(20), tfee int, tyear date, foreign key(tid) references student(tid) on delete cascade, foreign key(tcname) references placements(pname) on delete cascade);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> # 1. Insert at least 10 records in the Student  table and insert other tables accordingly.
+mysql>
+mysql> Insert into student
+    -> (sid, did, tid, sname, cgpa, branch, dob) values
+    -> (1, 1, 1, 'arnav', 9, 'COMP', '2002-12-12'),
+    -> (2, 2, 2, 'swaraj', 9, 'COMP', '2002-1-1'),
+    -> (3, 3, 3, 'devraj', 8, 'COMP', '2003-1-1'),
+    -> (4, 4, 4, 'araj', 8, 'IT', '2003-10-10'),
+    -> (5, 5, 5, 'student', 7, 'IT', '2003-10-10'),
+    -> (6, 6, 6, 'dyan', 6, 'IT', '2003-10-10'),
+    -> (7, 7, 7, 'aurum', 5, 'IT', '2003-10-10'),
+    -> (8, 8, 8, 'silica', 6, 'ENTC', '2003-10-10'),
+    -> (9, 9, 9, 'dodo', 7, 'ENTC', '2003-10-10'),
+    -> (0, 0, 10, 'apple', 8, 'ENTC', '2003-10-10');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> insert into placements
+    -> (did, pname, package, loc) values
+    -> (1, 'adobe', 30000, 'Pune'),
+    -> (2, 'sandbox', 40000, 'Pune'),
+    -> (3, 'dropbox', 30000, 'Mumbai'),
+    -> (4, 'facebook', 40000, 'Mumbai'),
+    -> (5, 'google', 50000, 'Nashik'),
+    -> (6, 'haldiram', 606000, 'Nashik');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> insert into train
+    -> (tid, tcname, tfee, tyear) values
+    -> (1, 'a', 30000, '2020-10-1'),
+    -> (2, 's', 40000, '2021-1-10'),
+    -> (3, 'd', 10000, '2023-10-1'),
+    -> (4, 'a', 50000, '2026-1-10'),
+    -> (5, 'a', 70000, '2019-10-1'),
+    -> (6, 'd', 70000, '2019-10-1');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`newlearningv0`.`train`, CONSTRAINT `train_ibfk_2` FOREIGN KEY (`tcname`) REFERENCES `placements` (`pname`) ON DELETE CASCADE)
+mysql>
+mysql> insert into train
+    -> (tid, tcname, tfee, tyear) values
+    -> (1, 'adobe', 30000, '2020-10-1'),
+    -> (2, 'sandbox', 40000, '2021-1-10'),
+    -> (3, 'dropbox', 10000, '2023-10-1'),
+    -> (4, 'adobe', 50000, '2026-1-10'),
+    -> (5, 'adobe', 70000, '2019-10-1'),
+    -> (6, 'dropbox', 70000, '2019-10-1');
+Query OK, 6 rows affected (0.00 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> # 2. Display all students details with branch ‘Computer ‘and ‘It’ and student name
+mysql> select * from student where (branch = 'COMP' OR branch = 'IT') and (sname like "a%" or sname like "d%");
++------+------+-----+--------+------+--------+------------+
+| sid  | did  | tid | sname  | cgpa | branch | dob        |
++------+------+-----+--------+------+--------+------------+
+|    1 |    1 |   1 | arnav  |    9 | COMP   | 2002-12-12 |
+|    3 |    3 |   3 | devraj |    8 | COMP   | 2003-01-01 |
+|    4 |    4 |   4 | araj   |    8 | IT     | 2003-10-10 |
+|    6 |    6 |   6 | dyan   |    6 | IT     | 2003-10-10 |
+|    7 |    7 |   7 | aurum  |    5 | IT     | 2003-10-10 |
++------+------+-----+--------+------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql>
+mysql> # 3. list the number of different companies.(use of distinct)
+mysql> select distinct pname from placements;
++----------+
+| pname    |
++----------+
+| adobe    |
+| dropbox  |
+| facebook |
+| google   |
+| haldiram |
+| sandbox  |
++----------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> # 4. Give 15% increase in fee of the Training  whose joining year is 2019.
+mysql> update train set tfee = 1.15 * tfee where tyear = '2019-10-1';
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql>
+mysql> # 5. Delete Student details having CGPA score less than 7.
+mysql> delete from student where cgpa<7;
+Query OK, 3 rows affected (0.00 sec)
+
+mysql> select * from Student;
++------+------+-----+---------+------+--------+------------+
+| sid  | did  | tid | sname   | cgpa | branch | dob        |
++------+------+-----+---------+------+--------+------------+
+|    1 |    1 |   1 | arnav   |    9 | COMP   | 2002-12-12 |
+|    2 |    2 |   2 | swaraj  |    9 | COMP   | 2002-01-01 |
+|    3 |    3 |   3 | devraj  |    8 | COMP   | 2003-01-01 |
+|    4 |    4 |   4 | araj    |    8 | IT     | 2003-10-10 |
+|    5 |    5 |   5 | student |    7 | IT     | 2003-10-10 |
+|    9 |    9 |   9 | dodo    |    7 | ENTC   | 2003-10-10 |
+|    0 |    0 |  10 | apple   |    8 | ENTC   | 2003-10-10 |
++------+------+-----+---------+------+--------+------------+
+7 rows in set (0.00 sec)
+
+mysql>
+mysql> # 6. Find the names of companies belonging to pune or Mumbai
+mysql> select * from placements where loc = 'Pune' or loc = 'Mumbai';
++------+----------+---------+--------+
+| did  | pname    | package | loc    |
++------+----------+---------+--------+
+|    1 | adobe    |   30000 | Pune   |
+|    3 | dropbox  |   30000 | Mumbai |
+|    4 | facebook |   40000 | Mumbai |
+|    2 | sandbox  |   40000 | Pune   |
++------+----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> # 7. Find the student name who joined training in  1-1-2019 as well as in 1-1-2021
+mysql>  select s.sname from student s, train t where t.tid = s.tid and (t.tyear = '2019-10-1' or t.tyear = '2021-01-10');
++---------+
+| sname   |
++---------+
+| swaraj  |
+| student |
++---------+
+2 rows in set (0.00 sec)
+
+mysql> # 8. Find the student name  having maximum CGPA score and names of students  having CGPA score between  7 to 9 .
+mysql> # a:
+mysql> select sname from student where cgpa = (select max(cgpa) from student);
++--------+
+| sname  |
++--------+
+| arnav  |
+| swaraj |
++--------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> # b:
+mysql> select sname from student where cgpa > 6.9 and cgpa < 9.1;
++---------+
+| sname   |
++---------+
+| arnav   |
+| swaraj  |
+| devraj  |
+| araj    |
+| student |
+| dodo    |
+| apple   |
++---------+
+7 rows in set (0.00 sec)
+
+mysql> # 9. Display all Student  name with T_id  with decreasing order of Fees
+mysql> select s.sname, t.tfee, t.tid from student s, train t where (s.tid = t.tid) order by t.tfee desc;
++---------+-------+------+
+| sname   | tfee  | tid  |
++---------+-------+------+
+| student | 80500 |    5 |
+| araj    | 50000 |    4 |
+| swaraj  | 40000 |    2 |
+| arnav   | 30000 |    1 |
+| devraj  | 10000 |    3 |
++---------+-------+------+
+5 rows in set (0.00 sec)
+
+mysql> # 10. Display PCompany name, S_name ,location and Package with Package  30K, 40K and 50k
+mysql> select  p.pname, s.sname, p.loc, p.package, t.tid from student s, train t, placements p where (s.tid = t.tid) and (t.tcname = p.pname) and (p.package in (30000, 40000, 50000));
++---------+---------+--------+---------+------+
+| pname   | sname   | loc    | package | tid  |
++---------+---------+--------+---------+------+
+| adobe   | arnav   | Pune   |   30000 |    1 |
+| sandbox | swaraj  | Pune   |   40000 |    2 |
+| dropbox | devraj  | Mumbai |   30000 |    3 |
+| adobe   | araj    | Pune   |   30000 |    4 |
+| adobe   | student | Pune   |   30000 |    5 |
++---------+---------+--------+---------+------+
+5 rows in set (0.00 sec)
+
+mysql>
