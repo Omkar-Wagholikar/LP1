@@ -1,28 +1,37 @@
+===========================
+
+create table student(sid int, did int, tid int, sname varchar(20), cgpa int, branch varchar(20), dob date, doj date, primary key(tid));
+
+===========================
+
 Insert into student
-(sid, did, tid, sname, cgpa, branch, dob) values 
-(1, 1, 1, 'aq', 9, 'COMP', '2002-12-12'),
-(2, 2, 2, 'sw', 9, 'COMP', '2002-1-1'),
-(3, 3, 3, 'de', 8, 'COMP', '2003-1-1'),
-(4, 4, 4, 'ar', 8, 'IT', '2003-10-10'),
-(5, 5, 5, 'st', 7, 'IT', '2003-10-10'),
-(6, 6, 6, 'dy', 6, 'IT', '2003-10-10'),
-(7, 7, 7, 'au', 5, 'IT', '2003-10-10'),
-(8, 8, 8, 'si', 6, 'ENTC', '2003-10-10'),
-(9, 9, 9, 'do', 7, 'ENTC', '2003-10-10'),
-(0, 0, 10, 'ap', 8, 'ENTC', '2003-10-10');
+(sid, did, tid, sname, cgpa, branch, dob, doj) values 
+(1, 1, 1, 'aq', 9, 'COMP', '2002-12-12', '2019-1-1'),
+(2, 2, 2, 'sw', 9, 'COMP', '2002-1-1', '2019-1-1'),
+(3, 3, 3, 'de', 8, 'COMP', '2003-1-1', '2019-1-1'),
+(4, 4, 4, 'ar', 8, 'IT', '2003-10-10', '2020-1-1'),
+(5, 5, 5, 'st', 7, 'IT', '2003-10-10', '2020-1-1'),
+(6, 6, 6, 'dy', 6, 'IT', '2003-10-10', '2020-1-1'),
+(7, 7, 7, 'au', 5, 'IT', '2003-10-10', '2024-1-1'),
+(8, 8, 8, 'si', 6, 'ENTC', '2003-10-10', '2023-1-1'),
+(9, 9, 9, 'do', 7, 'ENTC', '2003-10-10', '2022-1-1'),
+(0, 0, 10, 'ap', 8, 'ENTC', '2003-10-10', '2021-1-1');
 
 
 ===========================
 
+create table placements(did int, pname varchar(20), package int, loc varchar(200), primary key(pname));
+
+===========================
 
 insert into placements
 (did, pname, package, loc) values 
-(1, 'a', 30000, 'l1'),
-(2, 's', 40000, 'l2'),
-(3, 'd', 30000, 'l3'),
-(4, 'f', 40000, 'l4'),
-(5, 'g', 50000, 'l5'),
-(6, 'h', 606000, 'l6');
+(1, 'a', 30000, 'Pune'),
+(2, 's', 40000, 'Pune'),
+(3, 'd', 30000, 'Mumbai'),
+(4, 'f', 40000, 'Mumbai'),
+(5, 'g', 50000, 'Nashik'),
+(6, 'h', 606000, 'Nashik');
 
 
 ===========================
@@ -42,17 +51,40 @@ insert into train
 
 ===========================
 
+2. 
 select * from student where (branch = 'COMP' OR branch = 'IT') and (sname like "a%" or sname like "d%");
 
 
 ===========================
 
+3.
 select distinct pname from placements;
 
 ===========================
-
-select distinct pname from placements;
+5.
+delete from student where cgpa<7;
 
 ===========================
+6.
+select * from placements where loc = 'Pune' or loc = 'Mumbai';
+
+7.
+select sname from student where doj = '2019-1-1' or doj = '2021-1-1';
+
+8. 
+a:
+select sname from student where cgpa = (select max(cgpa) from student);
+
+b:
+ select sname from student where cgpa > 6.9 and cgpa < 9.1;
+
+9. 
+select s.sname, t.tid from student s join train t on s.tid = t.tid order by t.tfee desc;
+
+10.
+
+
+
+
 
 
