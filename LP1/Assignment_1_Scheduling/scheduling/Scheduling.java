@@ -1,7 +1,10 @@
 package LP1.Assignment_1_Scheduling.scheduling;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Float;
 
 import LP1.Assignment_1_Scheduling.process.Process;
 
@@ -22,6 +25,14 @@ public class Scheduling {
         return map;
     }
 
+    public void sort() {
+        Collections.sort(all_processes, new Comparator<Process>() {
+            @Override
+            public int compare(Process o1, Process o2) {
+                return Float.compare(o1.getArrival(), o2.getArrival());
+            }
+        });
+    }
     public float getAverageWaitTime(){
         return totalWaitTime / scheduledProcesses.size();
     }
