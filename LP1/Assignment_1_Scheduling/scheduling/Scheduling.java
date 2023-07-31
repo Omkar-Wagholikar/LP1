@@ -30,16 +30,22 @@ public class Scheduling {
         wt[0] = 0;
 
         // calculating waiting time
+        
         for (int i = 1; i < all_processes.size(); i++) {
             float wasted = 0;
             service_time[i] = service_time[i - 1] + all_processes.get(i - 1).getBurstTime();
-            wt[i] = service_time[i] - all_processes.get(i).getArrival();
+            wt[i] = service_time[i] + all_processes.get(i).getArrival();
+            System.out.println(service_time[i] + " " + i);
             if (wt[i] < 0) {
+                System.out.println("SET");
                 wasted = wt[i];
                 wt[i] = 0;
             }
             service_time[i] = service_time[i] + wasted;
         }
+        System.out.println();
+        for(float a: service_time) System.out.print(a + " ");
+        System.out.println();
     }
 
     void findTurnAroundTime(float wt[], float tat[]) {
