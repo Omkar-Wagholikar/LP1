@@ -1,61 +1,63 @@
 package LP1.Assignment_1_Scheduling.scheduling;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Scanner;
-
 import LP1.Assignment_1_Scheduling.process.Process;
+import java.util.*;
 
-public class Round extends Scheduling {
-    float time_slice = 0;
-    protected ArrayList<Process> all_processes; 
-    Map<String, Integer> waiting_time = new HashMap<String, Integer>();
-
-    public Round(ArrayList<Process> all_processes, float time_slice) {
-        System.out.println("ROUND");
+public class Round extends Scheduling{
+    public Round(ArrayList<Process> all_processes) {
+        System.out.println("RoundRobin");
         this.all_processes = all_processes;
-        this.time_slice = time_slice;
     }
+    public void schedule(int qt) {
+        float  bt[], wt[], tat[], rem_bt[], temp, sq = 0;
+        int n, i, count = 0;
 
-    public void schedule()
-    {
-        System.out.println("\nImplementing Round Robin: \n\nSCHEDULING ORDER IS AS FOLLOWS: ");
-
-        //calculating wait time
-        float waitime = 0;
-        int processed = 0, sum = 0;
-        float CPU_time;
-        
-        CPU_time = time_slice;
-        System.out.print("CPU cycle: "+ CPU_time);
-        
-        while(processed!= all_processes.size())
-        {
-            for(int i = 0; i< all_processes.size(); i++)
-            {
-                if(all_processes.get(i).getBurstTime() > CPU_time)
-                {   
-                    all_processes.get(i).setBurstTime(all_processes.get(i).getBurstTime() - CPU_time);
-                    waitime += CPU_time;
-                    totalWaitTime += CPU_time;
-                }
-                else if(all_processes.get(i).getBurstTime()>0)
-                {
-                    waitime+= all_processes.get(i).getBurstTime();
-                    sum+=waitime;
-                    all_processes.get(i).setBurstTime(all_processes.get(i).getBurstTime() - CPU_time);
-                    System.out.print("\nTask Completed!");
-                    System.out.println(all_processes.get(i).getProcess().toString());
-                    System.out.println("Turnaround time is: " + waitime);
-                    totalTurnAroundTime += waitime;
-                    processed++;
-                }
-            }
+        float awt = 0, atat = 0;
+        bt = new float[all_processes.size()];
+        wt = new float[all_processes.size()];
+        tat = new float[all_processes.size()];
+        rem_bt = new float[all_processes.size()];
+        Scanner s = new Scanner(System.in);
+        // System.out.print("Enter the number of process (maximum 10) = ");
+        n = all_processes.size();
+        System.out.print("Enter the burst time of the process\n");
+        for (i = 0; i < n; i++) {
+            // System.out.print("P" + i + " = ");
+            bt[i] = all_processes.get(i).getBurstTime();
+            rem_bt[i] = bt[i];
         }
-
-        System.out.println("\nAvg wait time: "+ ((sum-waitime)/all_processes.size()));
+        // System.out.print("Enter the quantum time: ");
+        // qt = s.nextInt();
+        while (true) {
+            for (i = 0, count = 0; i < n; i++) {
+                temp = qt;
+                if (rem_bt[i] == 0) {
+                    count++;
+                    continue;
+                }
+                if (rem_bt[i] > qt)
+                    rem_bt[i] = rem_bt[i] - qt;
+                else if (rem_bt[i] >= 0) {
+                    temp = rem_bt[i];
+                    rem_bt[i] = 0;
+                }
+                sq = sq + temp;
+                tat[i] = sq;
+            }
+            if (n == count)
+                break;
+        }
+        System.out.print("--------------------------------------------------------------------------------");
+        System.out.print("\nProcess\t      Burst Time\t       Turnaround Time\t          Waiting Time\n");
+        System.out.print("--------------------------------------------------------------------------------");
+        for (i = 0; i < n; i++) {
+            wt[i] = tat[i] - bt[i];
+            awt = awt + wt[i];
+            atat = atat + tat[i];
+            System.out.print("\n " + (i + 1) + "\t " + bt[i] + "\t\t " + tat[i] + "\t\t " + wt[i] + "\n");
+        }
+        awt = awt / n;
+        atat = atat / n;
+        System.out.println("\nAverage waiting Time = " + awt + "\n");
+        System.out.println("Average turnaround time = " + atat);
     }
 }

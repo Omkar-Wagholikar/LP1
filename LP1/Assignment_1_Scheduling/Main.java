@@ -8,14 +8,17 @@ import LP1.Assignment_1_Scheduling.process.Process;
 import LP1.Assignment_1_Scheduling.scheduling.*;
 
 public class Main {
+    
     public static void main(String[] args) {
 
         ArrayList<Process> processes = new ArrayList<Process>();
 
         // long[] burstTimes = { 300, 125, 40, 150, 100, 3 };
-                            // p0  p1  p2  p3  p4   p5
-        long[] burstTimes = { 50, 100, 50, 50, 100, 150 };
+        // p0 p1 p2 p3 p4 p5
+
         long[] arrivalTimes = { 50, 100, 50, 50, 100, 0 };
+        // long[] burstTimes = { 510, 100, 10, 50, 100, 150 };
+        long[] burstTimes = { 6, 34, 23, 45, 90, 12 };
         float[] processPriority = { 11, 2, 33, 4, 15, 56 };
 
         for (int i = 0; i < burstTimes.length; i++) {
@@ -25,13 +28,16 @@ public class Main {
 
         System.out.println("Hello world");
 
-        FCFS scheduler = new FCFS(processes);
+        // FCFS scheduler = new FCFS(processes);
         // SJF scheduler = new SJF(processes);
         // Priority scheduler = new Priority(processes);
         // Round scheduler = new Round(processes, 50);
+        RoundRobin scheduler = new RoundRobin(processes);
 
-        scheduler.sort();
-        scheduler.schedule();
-        scheduler.printScheduledSequence();
+        // scheduler.sortByArrivalAndBurst();
+        scheduler.schedule(5);
+        // scheduler.showAllProcesses();
+        // scheduler.printScheduledSequence();
+
     }
 }

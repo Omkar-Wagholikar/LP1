@@ -14,13 +14,14 @@ public class Priority extends Scheduling {
     }
 
     public void schedule() {
+        sortByArrivalAndPriority();
         scheduledProcesses = all_processes;
-        Collections.sort(all_processes, new Comparator<Process>() {
-            @Override
-            public int compare(Process o1, Process o2) {
-                return Float.compare(o1.getPriority(), o2.getPriority());
-            }
-        });
+        // Collections.sort(all_processes, new Comparator<Process>() {
+        //     @Override
+        //     public int compare(Process o1, Process o2) {
+        //         return Float.compare(o1.getPriority(), o2.getPriority());
+        //     }
+        // });
         for(Process process: scheduledProcesses){
             process.setWaitTime(totalWaitTime);
             process.setTurnAroundTime(totalWaitTime + process.getBurstTime());

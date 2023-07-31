@@ -25,11 +25,11 @@ public class Process {
     //     this.wait_time = wait_time;
     // }
 
-    public Process(String name, float turn_around_time, float burst_time, float arrival_times){
+    public Process(String name, float burst_time, float priority, float arrival_times){
         this.burst_time = burst_time;
         this.arrival_times = arrival_times;
         this.name = name;
-        this.turn_around_time = turn_around_time;
+        this.priority = priority;
     }
 
     public String getName(){
