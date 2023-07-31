@@ -1,43 +1,80 @@
 package LP1.Assignment_1_Scheduling;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 import LP1.Assignment_1_Scheduling.process.Process;
 import LP1.Assignment_1_Scheduling.scheduling.*;
 
 public class Main {
-    
     public static void main(String[] args) {
-
         ArrayList<Process> processes = new ArrayList<Process>();
+        processes = getProcesses(processes);
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            int choice = menu();
+            if (choice == 5)
+                break;
+            checkSchedule(processes, choice);
+        }
+    }
 
-        // long[] burstTimes = { 300, 125, 40, 150, 100, 3 };
-        // p0 p1 p2 p3 p4 p5
+    public static Integer menu() {
+        System.out.println("=============Menu=============");
+        System.out.println("1. FCFS\n2. SJF\n3. Priority\n4. Round Robin\n5. New input");
+        Scanner sc = new Scanner(System.in);
+        return sc.nextInt();
+    }
 
-        long[] arrivalTimes = { 50, 100, 50, 50, 100, 0 };
-        // long[] burstTimes = { 510, 100, 10, 50, 100, 150 };
-        long[] burstTimes = { 6, 34, 23, 45, 90, 12 };
-        float[] processPriority = { 11, 2, 33, 4, 15, 56 };
-
-        for (int i = 0; i < burstTimes.length; i++) {
-            Process p = new Process("P" + Integer.toString(i), burstTimes[i], processPriority[i], arrivalTimes[i]);
+    public static ArrayList<Process> getProcesses(ArrayList<Process> processes) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of processes");
+        int num = sc.nextInt();
+        float burst_time, priority, arrival_times;
+        while (num-- > 0) {
+            System.out.print("name, burst time, priority, arrival time ");
+            String name = sc.nextLine();
+            System.out.print("name, burst time, priority, arrival time: ");
+            burst_time = sc.nextFloat();
+            priority = sc.nextFloat();
+            arrival_times = sc.nextFloat();
+            Process p = new Process(name, burst_time, priority, arrival_times);
             processes.add(p);
         }
+        return processes;
+    }
 
-        System.out.println("Hello world");
+    public static void checkSchedule(List<Process> processes, int choice) {
+        Scanner sc = new Scanner(System.in);
+        switch (choice) {
+            case 1:
+                FCFS fcfs = new FCFS(processes);
+                fcfs.schedule();
+                fcfs.printScheduledSequence();
+                break;
 
-        // FCFS scheduler = new FCFS(processes);
-        // SJF scheduler = new SJF(processes);
-        // Priority scheduler = new Priority(processes);
-        // Round scheduler = new Round(processes, 50);
-        RoundRobin scheduler = new RoundRobin(processes);
-
-        // scheduler.sortByArrivalAndBurst();
-        scheduler.schedule(5);
-        // scheduler.showAllProcesses();
-        // scheduler.printScheduledSequence();
-
+            case 2:
+                SJF sjf = new SJF(processes);
+                sjf.schedule();
+                sjf.printScheduledSequence();
+                break;
+            case 3:
+                Priority pri = new Priority(processes);
+                pri.schedule();
+                pri.printScheduledSequence();
+                break;
+            case 4:
+                RoundRobin rrb = new RoundRobin(processes);
+                System.out.print("CPU Time: ");
+                int qt = sc.nextInt();
+                rrb.schedule(qt);
+                rrb.printScheduledSequence();
+                break;
+            default:
+                System.out.print("Please Enter a valid chice");
+        }
     }
 }
