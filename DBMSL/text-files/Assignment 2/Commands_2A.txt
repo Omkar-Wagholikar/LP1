@@ -1,0 +1,99 @@
+#Assignment No 2A  (Student Schema)
+#Consider the following relational Schema.  
+#    •  Student( s_id,Drive_id,T_id,s_name,CGPA,s_branch,S_dob)
+#    •  PlacementDrive( Drive_id,Pcompany_name,package,location)
+#    •  Training ( T_id,Tcompany_name,T_Fee,T_year) 
+#Note: Use referential integrity constraints while creating tables with on delete cascade options. 
+#Create view(simple), index, sequence and synonym based on above tables.  
+
+# Create Tables: 
+
+create table student(
+sid int, 
+did int, 
+tid int, 
+sname varchar(20), 
+cgpa int, 
+branch varchar(20), 
+dob date, 
+primary key(tid) 
+);
+
+create table placements(did int, pname varchar(20), package int, loc varchar(200), primary key(pname));
+
+create table train(
+tid int, 
+tcname varchar(20), 
+tfee int, 
+tyear date, 
+foreign key(tid) references student(tid) on delete cascade, 
+foreign key(tcname) references placements(pname) on delete cascade
+);
+
+# insert data into tables: 
+Insert into student
+(sid, did, tid, sname, cgpa, branch, dob) values 
+(1, 1, 1, 'arnav', 9, 'COMP', '2002-12-12'),
+(2, 2, 2, 'swaraj', 9, 'COMP', '2002-1-1'),
+(3, 3, 3, 'devraj', 8, 'COMP', '2003-1-1'),
+(4, 4, 4, 'araj', 8, 'IT', '2003-10-10'),
+(5, 5, 5, 'student', 7, 'IT', '2003-10-10'),
+(6, 6, 6, 'dyan', 6, 'IT', '2003-10-10'),
+(7, 7, 7, 'aurum', 5, 'IT', '2003-10-10'),
+(8, 8, 8, 'silica', 6, 'ENTC', '2003-10-10'),
+(9, 9, 9, 'dodo', 7, 'ENTC', '2003-10-10'),
+(0, 0, 10, 'apple', 8, 'ENTC', '2003-10-10');
+
+
+insert into placements
+(did, pname, package, loc) values 
+(1, 'adobe', 30000, 'Pune'),
+(2, 'sandbox', 40000, 'Pune'),
+(3, 'dropbox', 30000, 'Mumbai'),
+(4, 'facebook', 40000, 'Mumbai'),
+(5, 'google', 50000, 'Nashik'),
+(6, 'haldiram', 606000, 'Nashik');
+
+
+insert into train
+(tid, tcname, tfee, tyear) values
+(1, 'adobe', 30000, '2020-10-1'),
+(2, 'sandbox', 40000, '2021-1-10'),
+(3, 'dropbox', 10000, '2023-10-1'),
+(4, 'adobe', 50000, '2026-1-10'),
+(5, 'adobe', 70000, '2019-10-1'),
+(6, 'dropbox', 70000, '2019-10-1');
+
+
+# Create view(simple)
+create view data as 
+select  p.pname, s.sname, p.loc, p.package, t.tid from student s, train t, placements p 
+where (s.tid = t.tid) and (t.tcname = p.pname) 
+order by p.package desc with check option;
+
+select * from data;
+
+# Create Index:
+
+create index stid on student(sname);
+show index from student;
+
+# CREATE SEQUENCE
+
+create table pern(
+tid int not null auto_increment, 
+sname varchar(20), 
+primary key(tid)
+);
+insert into pern(sname) values ('Anmol');
+insert into pern(sname) values ('Anmo');
+insert into pern(sname) values ('An');
+delete from pern where tid = 3;
+insert into pern(sname) values ('A');
+select * from pern;
+
+# CREATE SYNONYM
+
+select tid as notTid, sname from pern;
+create view newPern as select tid as notTid, sname from pern;
+select * from newPern;
