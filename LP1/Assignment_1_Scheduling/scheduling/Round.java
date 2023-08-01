@@ -16,7 +16,6 @@ public class Round extends Scheduling{
         wt = new float[all_processes.size()];
         tat = new float[all_processes.size()];
         rem_bt = new float[all_processes.size()];
-        Scanner s = new Scanner(System.in);
         // System.out.print("Enter the number of process (maximum 10) = ");
         n = all_processes.size();
         System.out.print("Enter the burst time of the process\n");

@@ -3,8 +3,6 @@ package LP1.Assignment_1_Scheduling.scheduling;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.lang.Float;
 
 import LP1.Assignment_1_Scheduling.process.Process;

@@ -1,8 +1,6 @@
 package LP1.Assignment_1_Scheduling.scheduling;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import LP1.Assignment_1_Scheduling.process.Process;
 
