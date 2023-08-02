@@ -23,7 +23,9 @@ select sname, branch, tfee from student natural join train natural join placemen
 
 
 #5. Display all training details attended by “shantanu” in year 2011  
--> 
+create view v as select * from student inner join train where student.tid = train.tid;
+select * from v where year(tyear) = 2019 and sname = 'student';
+
 
 #6. list the total number of companies who conduct training before 2015
 select count(tid) from train where year(tyear) <  2020;
@@ -35,7 +37,8 @@ select sname from fullData where loc = "Pune" and tcname = "adobe" or tcname = '
 
 
 #8. Find  the names of all Students who have joined ‘Microsoft ‘ training  in 2015 .
-->
+create view viewT as select * from train natural join placements;
+select sname from viewT where tcname = 'dropbox' and year(tyear) = 2019;	
 
 9. Create a view showing the Student and Training details.
 create view t2 as select * from student natural join train;
@@ -47,6 +50,5 @@ create view S as select tid, sname, branch from student;
 insert into S(tid, sname, branch) values (12, 'someName', 'someBranch');
 update S set sname="Omkkar" where branch = "someBranch";
 delete from S where sname = "Omkkar";
+
 drop view viewT;
-
-
