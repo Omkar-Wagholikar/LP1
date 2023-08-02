@@ -1,0 +1,52 @@
+Assignment No 3 (based on Student schema)  
+    • Student (s_id, Drive_id,T_id,s_name,CGPA,s_branch,s_dob)
+    •  Placement Drive( Drive_id, Pcompany_name,package,location)
+    •  Training ( T_id,Tcompany_name,T_Fee,T_date) 
+
+Use the tables created in assignment no 2 and execute the following queries:  
+
+#1. Find the Student details and Placement details using NATURAL JOIN. 
+select sname, tcname, package from student natural join train natural join placements;
+
+ 
+#2. Find all the student details with company_name who have conducted in same drive
+select sname, cgpa, branch, pname from student natural join placements;
+
+
+#3. List all the Student name and Student branch of Student having package 5 LPA
+select sname, branch, package from fullData where package = 30000;
+select sname, branch, package from student natural join train natural join placements where package = 30000;
+
+
+#4.List all the student names ,company_name having T_fee more than 20000
+select sname, branch, tfee from student natural join train natural join placements where tfee > 30000;
+
+
+#5. Display all training details attended by “shantanu” in year 2011  
+-> 
+
+#6. list the total number of companies who conduct training before 2015
+select count(tid) from train where year(tyear) <  2020;
+
+
+#7. List the students name with company ‘Microsoft’ and  location ’Thane’
+create view fullData as select * from student natural join train natural join placements;
+select sname from fullData where loc = "Pune" and tcname = "adobe" or tcname = 'sandbox';
+
+
+#8. Find  the names of all Students who have joined ‘Microsoft ‘ training  in 2015 .
+->
+
+9. Create a view showing the Student and Training details.
+create view t2 as select * from student natural join train;
+select * from t2;
+
+10. Perform Manipulation on simple view-Insert, update, delete, drop view.  
+
+create view S as select tid, sname, branch from student;
+insert into S(tid, sname, branch) values (12, 'someName', 'someBranch');
+update S set sname="Omkkar" where branch = "someBranch";
+delete from S where sname = "Omkkar";
+drop view viewT;
+
+
