@@ -28,16 +28,16 @@ public class Main {
 
         } else if (regs.contains(ele)) {
             // Register
-            soln += "(" + regs.indexOf(ele) + ")\t";
+            soln += "(" + (regs.indexOf(ele) + 1) + ")\t";
 
         } else {
             // Symtable
-            print("reference SymTable here: " + ele);
+            soln += ("__\t");
         }
         return soln;
     }
 
-    public static void analyse(String cmd, StringTokenizer rest, Map<String, List<String>> OpTab, List<String> regs) {
+    public static String analyse(String cmd, StringTokenizer rest, Map<String, List<String>> OpTab, List<String> regs) {
         List<String> progList = new ArrayList<String>();
         rest.asIterator().forEachRemaining(element -> {
             progList.add((String) element);
@@ -48,11 +48,11 @@ public class Main {
             soln += output(progList.get(i), regs);
         }
 
-        print(OpTab.get(cmd) + "\t" + soln);
+        return OpTab.get(cmd) + "\t" + soln;
     }
 
     public static void main(String[] args) {
-        List<String> commands = FileHandler.readProgram(0);
+        List<String> commands = FileHandler.readProgram(1);
         Map<String, List<String>> OpTab = FileHandler.createOptab();
         Map<String, Integer> SymTab = new HashMap<>();
         // Map<String, Integer> LitTab = new HashMap<>();
@@ -67,34 +67,37 @@ public class Main {
         StringTokenizer temp = new StringTokenizer("AREG    BREG");
         StringTokenizer t2 = new StringTokenizer("3");
 
-        analyse("ADD", temp, OpTab, regs);
-        analyse("DS", t2, OpTab, regs);
+        // print(analyse("ADD", temp, OpTab, regs));
+        // analyse("DS", t2, OpTab, regs);
 
-        // StringTokenizer token = new StringTokenizer(commands.get(0));
-        // int lc = 0;
-        // if (token.countTokens() > 1) {
-        // token.nextToken();
-        // lc = Integer.parseInt(token.nextToken());
-        // }
-        // if (lc > 0)
-        // lc = lc - 1;
-        // for (String s : commands) {
-        // token = new StringTokenizer(s);
+        StringTokenizer token = new StringTokenizer(commands.get(0));
+        int lc = 0;
+        if (token.countTokens() > 1) {
+            token.nextToken();
+            lc = Integer.parseInt(token.nextToken());
+        }
+        if (lc > 0)
+            lc = lc - 1;
+        for (String s : commands) {
+            token = new StringTokenizer(s);
 
-        // String cmd = token.nextToken();
-        // // print(cmd);
-        // if (OpTab.containsKey(cmd)) {
-        // if (OpTab.get(cmd).get(0).equals("AD")) {
-        // // analyse(cmd, token);
-        // } else {
-        // analyse(cmd, token, OpTab);
-        // lc++;
-        // }
-        // } else {
-        // lc++;
-        // SymTab.put(cmd, lc);
-        // }
-        // }
-        // print("\n" + SymTab.toString());
+            String cmd = token.nextToken();
+            // print(s);
+            if (OpTab.containsKey(cmd)) {
+                if (OpTab.get(cmd).get(0).equals("AD")) {
+                    print(s + "<-");
+                    // analyse(cmd, token);
+                } else {
+                    // analyse(cmd, token, OpTab);
+                    lc++;
+                    print(s+"\t"+lc+"\t"+analyse(cmd, token, OpTab, regs));
+                }
+            } else {
+                lc++;
+                SymTab.put(cmd, lc);
+                print(s+"\t"+lc+"\t"+analyse(token.nextToken(), token, OpTab, regs));
+            }
+        }
+        print("\n" + SymTab.toString());
     }
 }
