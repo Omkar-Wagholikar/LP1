@@ -1,0 +1,9 @@
+START   100
+DS      3
+MOVER   AREG    B
+ADD     AREG    C
+MOVEM   AREG    D
+PRINT   D
+ORIGIN  A-1
+STOP    L2+1
+END     L1

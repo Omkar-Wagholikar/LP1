@@ -12,10 +12,10 @@ public class FileHandler {
         System.out.println("File handler created");
     }
 
-    public static List<String> readProgram() {
+    public static List<String> readProgram(int caseNumber) {
         List<String> commands = new ArrayList<String>();
         try {
-            File file = new File("LP1/Assignment_2_Assembler_pass1/program.txt");
+            File file = new File("LP1/Assignment_2_Assembler_pass1/test-cases/testCase" + caseNumber + ".txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null)

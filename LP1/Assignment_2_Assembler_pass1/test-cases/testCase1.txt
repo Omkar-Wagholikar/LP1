@@ -1,5 +1,5 @@
-    START 100
-A   DS    3
+    START   100
+A   DS      3
 L1  MOVER   AREG    B
     ADD     AREG    C
     MOVEM   AREG    D
