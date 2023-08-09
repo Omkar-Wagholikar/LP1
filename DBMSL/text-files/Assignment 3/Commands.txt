@@ -11,15 +11,17 @@ select sname, tcname, package from student natural join train natural join place
  
 #2. Find all the student details with company_name who have conducted in same drive
 select sname, cgpa, branch, pname from student natural join placements;
+select sid, sname, cgpa, branch, dob, pname, package, loc from student inner join placements on placements.did = student.did;
 
 
 #3. List all the Student name and Student branch of Student having package 5 LPA
 select sname, branch, package from fullData where package = 30000;
 select sname, branch, package from student natural join train natural join placements where package = 30000;
-
+select sname, branch from student left outer join placements on placements.did = student.did where package > 30000;
 
 #4.List all the student names ,company_name having T_fee more than 20000
 select sname, branch, tfee from student natural join train natural join placements where tfee > 30000;
+select * from student inner join placements inner join train where student.did = placements.did and train.tid = student.tid and train.tfee > 30000;
 
 
 #5. Display all training details attended by “shantanu” in year 2011  
@@ -28,6 +30,7 @@ select * from v where year(tyear) = 2019 and sname = 'student';
 
 
 #6. list the total number of companies who conduct training before 2015
+elect count(tcname) from train left join placements on train.tcname = placements.pname where year(tyear)  = 2019;
 select count(tid) from train where year(tyear) <  2020;
 
 
