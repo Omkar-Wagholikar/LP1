@@ -1,4 +1,4 @@
-package LP1.Assignment_2_Assembler_pass1;
+// package LP1.Assignment_2_Assembler_pass1;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class FileHandler {
     public static List<String> readProgram(int caseNumber) {
         List<String> commands = new ArrayList<String>();
         try {
-            File file = new File("LP1/Assignment_2_Assembler_pass1/test-cases/testCase" + caseNumber + ".txt");
+            File file = new File("LP1/Assignment_2_Assembler_pass1/Assignment_2_Assembler_pass1/test-cases/testCase" + caseNumber + ".txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null)
@@ -31,7 +31,7 @@ public class FileHandler {
     protected static List<String> readOptab() {
         List<String> ops = new ArrayList<String>();
         try {
-            File file = new File("LP1/Assignment_2_Assembler_pass1/OPTAB.txt");
+            File file = new File("LP1/Assignment_2_Assembler_pass1/Assignment_2_Assembler_pass1/OPTAB.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
 
@@ -60,5 +60,17 @@ public class FileHandler {
             map.put(command, inpLst);
         }
         return map;
+    }
+
+    public static void writeOutput(int caseNumber, String code){
+     try {
+       FileWriter output = new FileWriter("outputs/output" + caseNumber + ".txt", true);
+       output.write(code);
+       output.close();
+     }
+     catch (Exception e) {
+        System.out.println("Problem in writing into: " + "outputs/output" + caseNumber + ".txt -> " + code);
+       e.getStackTrace();
+     }
     }
 }

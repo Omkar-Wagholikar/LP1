@@ -1,8 +1,9 @@
 
-package LP1.Assignment_2_Assembler_pass1;
+// package LP1.Assignment_2_Assembler_pass1;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+// import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -21,7 +22,7 @@ public class Main {
         }
     }
 
-    public static String output(String ele, List<String> regs) {
+    public static String output(String ele, List<String> regs, Map<String, Integer> SymTab) {
         String soln = "";
         if (isNumeric(ele)) {
             soln += "(C, " + ele + ")\t";
@@ -32,29 +33,41 @@ public class Main {
 
         } else {
             // Symtable
-            soln += ("__\t");
+            // soln += ("__\t");
+            if(SymTab.containsKey(ele)){
+                soln += SymTab.toString();
+            }
+            else if(ele.contains("+") ||  ele.contains("-") || ele.contains("*") ||  ele.contains("/")){
+                soln += "<><>";
+            }
+            else{
+                SymTab.put(ele, -1);
+                List<String> keys = new ArrayList<>(SymTab.keySet());
+                soln += "(S, " + (keys.indexOf(ele) + 1) + ")";
+            }
         }
         return soln;
     }
 
-    public static String analyse(String cmd, StringTokenizer rest, Map<String, List<String>> OpTab, List<String> regs) {
+    public static String analyse(String cmd, StringTokenizer rest, Map<String, List<String>> OpTab, List<String> regs, Map<String, Integer> SymTab) {
         List<String> progList = new ArrayList<String>();
-        rest.asIterator().forEachRemaining(element -> {
-            progList.add((String) element);
-        });
+        while( rest.hasMoreTokens()){
+            progList.add(rest.nextToken());
+        }
 
         String soln = "";
         for (int i = 0; i < progList.size(); i++) {
-            soln += output(progList.get(i), regs);
+            soln += output(progList.get(i), regs, SymTab);
         }
 
         return OpTab.get(cmd) + "\t" + soln;
     }
 
     public static void main(String[] args) {
-        List<String> commands = FileHandler.readProgram(1);
+        int caseNumber =1;
+        List<String> commands = FileHandler.readProgram(caseNumber);
         Map<String, List<String>> OpTab = FileHandler.createOptab();
-        Map<String, Integer> SymTab = new HashMap<>();
+        Map<String, Integer> SymTab = new LinkedHashMap<>();
         // Map<String, Integer> LitTab = new HashMap<>();
         List<String> regs = new ArrayList<String>() {
             {
@@ -64,11 +77,6 @@ public class Main {
                 add("DREG");
             }
         };
-        StringTokenizer temp = new StringTokenizer("AREG    BREG");
-        StringTokenizer t2 = new StringTokenizer("3");
-
-        // print(analyse("ADD", temp, OpTab, regs));
-        // analyse("DS", t2, OpTab, regs);
 
         StringTokenizer token = new StringTokenizer(commands.get(0));
         int lc = 0;
@@ -85,17 +93,17 @@ public class Main {
             // print(s);
             if (OpTab.containsKey(cmd)) {
                 if (OpTab.get(cmd).get(0).equals("AD")) {
-                    print(s + "<-");
-                    // analyse(cmd, token);
+                    // print(s + "\t" + OpTab.get(cmd).toString());
+                    print(s+"\t"+lc+"\t"+analyse(cmd, token, OpTab, regs, SymTab));
                 } else {
-                    // analyse(cmd, token, OpTab);
                     lc++;
-                    print(s+"\t"+lc+"\t"+analyse(cmd, token, OpTab, regs));
+                    print(s+"\t"+lc+"\t"+analyse(cmd, token, OpTab, regs, SymTab));
+                    // FileHandler.writeOutput(caseNumber, s+"\t"+lc+"\t"+analyse(cmd, token, OpTab, regs,SymTab).toString()+"\n");
                 }
             } else {
                 lc++;
                 SymTab.put(cmd, lc);
-                print(s+"\t"+lc+"\t"+analyse(token.nextToken(), token, OpTab, regs));
+                print(s+"\t"+lc+"\t"+analyse(token.nextToken(), token, OpTab, regs, SymTab));
             }
         }
         print("\n" + SymTab.toString());
