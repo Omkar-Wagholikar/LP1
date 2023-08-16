@@ -27,6 +27,7 @@ mysql> select sid, sname, cgpa, branch, dob, pname, package, loc from student in
 6 rows in set (0.00 sec)
 
 mysql> #3. List all the Student name and Student branch of Student having package 5 LPA
+mysql> select sname, branch from student left outer join placements on placements.did = student.did where package > 30000;
 +---------+--------+
 | sname   | branch |
 +---------+--------+
