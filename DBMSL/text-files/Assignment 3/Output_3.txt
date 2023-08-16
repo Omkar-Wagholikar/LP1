@@ -1,0 +1,130 @@
+mysql> #1. Find the Student details and Placement details using NATURAL JOIN. 
+mysql> select * from student natural join placements;
++------+------+-----+---------+------+--------+------------+----------+---------+--------+
+| did  | sid  | tid | sname   | cgpa | branch | dob        | pname    | package | loc    |
++------+------+-----+---------+------+--------+------------+----------+---------+--------+
+|    1 |    1 |   1 | arnav   |    9 | COMP   | 2002-12-12 | adobe    |   30000 | Pune   |
+|    2 |    2 |   2 | swaraj  |    9 | COMP   | 2002-01-01 | sandbox  |   40000 | Pune   |
+|    3 |    3 |   3 | devraj  |    8 | COMP   | 2003-01-01 | dropbox  |   30000 | Mumbai |
+|    4 |    4 |   4 | araj    |    8 | IT     | 2003-10-10 | facebook |   40000 | Mumbai |
+|    5 |    5 |   5 | student |    7 | IT     | 2003-10-10 | google   |   50000 | Nashik |
+|    6 |    6 |   6 | dyan    |    6 | IT     | 2003-10-10 | micrsft  |  606000 | Nashik |
++------+------+-----+---------+------+--------+------------+----------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> #2. Find all the student details with company_name who have conducted in same drive
+mysql> select sid, sname, cgpa, branch, dob, pname, package, loc from student inner join placements on placements.did = student.did;
++------+---------+------+--------+------------+----------+---------+--------+
+| sid  | sname   | cgpa | branch | dob        | pname    | package | loc    |
++------+---------+------+--------+------------+----------+---------+--------+
+|    1 | arnav   |    9 | COMP   | 2002-12-12 | adobe    |   30000 | Pune   |
+|    2 | swaraj  |    9 | COMP   | 2002-01-01 | sandbox  |   40000 | Pune   |
+|    3 | devraj  |    8 | COMP   | 2003-01-01 | dropbox  |   30000 | Mumbai |
+|    4 | araj    |    8 | IT     | 2003-10-10 | facebook |   40000 | Mumbai |
+|    5 | student |    7 | IT     | 2003-10-10 | google   |   50000 | Nashik |
+|    6 | dyan    |    6 | IT     | 2003-10-10 | micrsft  |  606000 | Thane  |
++------+---------+------+--------+------------+----------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> #3. List all the Student name and Student branch of Student having package 5 LPA
++---------+--------+
+| sname   | branch |
++---------+--------+
+| swaraj  | COMP   |
+| araj    | IT     |
+| student | IT     |
+| dyan    | IT     |
++---------+--------+
+mysql> #4.List all the student names ,company_name having T_fee more than 20000
+mysql> select sname, branch, tfee from student inner join placements inner join train where student.did = placements.did and train.tid = student.tid and train.tfee > 30000;
++---------+--------+-------+
+| sname   | branch | tfee  |
++---------+--------+-------+
+| araj    | IT     | 50000 |
+| student | IT     | 70000 |
+| dyan    | IT     | 70000 |
+| swaraj  | COMP   | 40000 |
++---------+--------+-------+
+4 rows in set (0.00 sec)
+mysql> #5. Display all training details attended by “shantanu” in year 2011 
+mysql> select * from student left join train using(tid);
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+| tid | sid  | did  | sname    | cgpa | branch | dob        | tcname  | tfee  | tyear      |
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+|   1 |    1 |    1 | arnav    |    9 | COMP   | 2002-12-12 | adobe   | 30000 | 2020-10-01 |
+|   2 |    2 |    2 | swaraj   |    9 | COMP   | 2002-01-01 | sandbox | 40000 | 2021-01-10 |
+|   3 |    3 |    3 | devraj   |    8 | COMP   | 2003-01-01 | dropbox | 10000 | 2023-10-01 |
+|   4 |    4 |    4 | araj     |    8 | IT     | 2003-10-10 | adobe   | 50000 | 2026-01-10 |
+|   5 |    5 |    5 | student  |    7 | IT     | 2003-10-10 | adobe   | 70000 | 2019-10-01 |
+|   6 |    6 |    6 | dyan     |    6 | IT     | 2003-10-10 | micrsft | 70000 | 2019-10-01 |
+|   7 |    7 |    7 | aurum    |    5 | IT     | 2003-10-10 | NULL    |  NULL | NULL       |
+|   8 |    8 |    8 | silica   |    6 | ENTC   | 2003-10-10 | NULL    |  NULL | NULL       |
+|   9 |    9 |    9 | dodo     |    7 | ENTC   | 2003-10-10 | NULL    |  NULL | NULL       |
+|  10 |    0 |    0 | apple    |    8 | ENTC   | 2003-10-10 | NULL    |  NULL | NULL       |
+|  11 |   10 |   10 | shantanu |   10 | MECH   | 0000-00-00 | NULL    |  NULL | NULL       |
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+11 rows in set (0.00 sec)
+mysql> select * from student left join train using(tid) where sname = "shantanu";
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+| tid | sid  | did  | sname    | cgpa | branch | dob        | tcname  | tfee  | tyear      |
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+|   3 |    3 |    3 | shantanu |    8 | COMP   | 2003-01-01 | dropbox | 10000 | 2023-10-01 |
++-----+------+------+----------+------+--------+------------+---------+-------+------------+
+1 row in set (0.00 sec)
+mysql> #6. list the total number of companies who conduct training before 2015
+mysql> select count(distinct tcname) from train where year(tyear) > 2020;
++------------------------+
+| count(distinct tcname) |
++------------------------+
+|                      3 |
++------------------------+
+1 row in set (0.00 sec)
+mysql> #7. List the students name with company ‘Microsoft’ and  location ’Thane’
+mysql> select * from student inner join placements using(did) where pname = 'micrsft' and loc = 'Thane';
++------+------+-----+-------+------+--------+------------+----------+---------+-------+
+| did  | sid  | tid | sname | cgpa | branch | dob        | pname    | package | loc   |
++------+------+-----+-------+------+--------+------------+----------+---------+-------+
+|    6 |    6 |   6 | dyan  |    6 | IT     | 2003-10-10 | micrsft  |  606000 | Thane |
++------+------+-----+-------+------+--------+------------+----------+---------+-------+
+mysql> #8. Find  the names of all Students who have joined ‘Microsoft ‘ training  in 2015 .
+mysql> select * from student s left join train t using(tid) where tcname = 'micrsft' and year(t.tyear) = 2015;
++-----+------+------+--------+------+--------+------------+----------+-------+------------+
+| tid | sid  | did  | sname  | cgpa | branch | dob        |  tcname  | tfee  | tyear      |
++-----+------+------+--------+------+--------+------------+----------+-------+------------+
+|  13 |   13 |   13 | arnav1 |    9 | COMP   | 2002-12-12 |  micrsft | 30000 | 2015-10-01 |
++-----+------+------+--------+------+--------+------------+----------+-------+------------+
+1 row in set (0.00 sec)
+
+mysql> #9. Create a view showing the Student and Training details.
+mysql> create view t2 as select * from student natural join train;
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> select * from t2;
++-----+------+------+---------+------+--------+------------+---------+-------+------------+
+| tid | sid  | did  | sname   | cgpa | branch | dob        | tcname  | tfee  | tyear      |
++-----+------+------+---------+------+--------+------------+---------+-------+------------+
+|   1 |    1 |    1 | arnav   |    9 | COMP   | 2002-12-12 | adobe   | 30000 | 2020-10-01 |
+|   2 |    2 |    2 | swaraj  |    9 | COMP   | 2002-01-01 | sandbox | 40000 | 2021-01-10 |
+|   3 |    3 |    3 | devraj  |    8 | COMP   | 2003-01-01 | dropbox | 10000 | 2023-10-01 |
+|   4 |    4 |    4 | araj    |    8 | IT     | 2003-10-10 | adobe   | 50000 | 2026-01-10 |
+|   5 |    5 |    5 | student |    7 | IT     | 2003-10-10 | adobe   | 70000 | 2019-10-01 |
+|   6 |    6 |    6 | dyan    |    6 | IT     | 2003-10-10 | dropbox | 70000 | 2019-10-01 |
++-----+------+------+---------+------+--------+------------+---------+-------+------------+
+6 rows in set (0.00 sec)
+
+mysql> #10. Perform Manipulation on simple view-Insert, update, delete, drop view.  
+mysql> create view S as select tid, sname, branch from student;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into S(tid, sname, branch) values (12, 'someName', 'someBranch');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> update S set sname="Omkkar" where branch = "someBranch";
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> delete from S where sname = "Omkkar";
+Query OK, 1 row affected (0.01 sec)
+
+mysql> drop view S;
+Query OK, 0 rows affected (0.00 sec)
