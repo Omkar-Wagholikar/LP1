@@ -1,0 +1,39 @@
+drop procedure tcir//
+
+
+mysql> create procedure tcir(in radius int)
+begin
+if(radius between 4 and 9) then
+insert into area(radius, area) values (radius, radius * radius * 3.14);
+select "Success" as Message;
+else
+select "Error" as Message;
+endif;
+end
+//
+
+
+create procedure tcir(in radius int)
+begin
+if (radius between 5 and 9) begin
+	select "Here" as message;
+end;
+insert into area(radius, area) values (radius, radius * radius * 3.14);
+select "Success" as Message;
+select * from area;
+end
+//
+
+
+create procedure tcir(in radius int)
+declare 
+not_in_range exception;
+begin
+insert into area(radius, area) values (radius, radius * radius * 3.14);
+select "Success" as Message;
+select * from area;
+exception
+ when not_in_range then
+ 	select "Do nada" from message;
+end
+//
