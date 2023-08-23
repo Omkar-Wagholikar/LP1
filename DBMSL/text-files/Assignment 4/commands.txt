@@ -1,8 +1,5 @@
-delimiter //
-show procedure status where db = "te31282db"//
-create table area(radius double, area double)//
-
 drop procedure tcir//
+show procedure status where db = "te31282db"//
 
 create procedure tcir(in radius real)
 begin
@@ -20,3 +17,79 @@ end
 //
 
 call tcir(4.5)//
+
+
+drop procedure tdf//
+
+create procedure tdf(in tdy date, in ltd date)
+begin
+declare days int;
+
+DECLARE out_of_bounds CONDITION FOR SQLSTATE '22012';
+DECLARE CONTINUE HANDLER FOR out_of_bounds 
+RESIGNAL SET MESSAGE_TEXT = 'days negative';
+
+set days = DATEDIFF(tdy, ltd);
+if (days < 30 and days > 15) then
+select  5 * days as "Amount";
+elseif(days > 30) then
+select  5 * (days % 30) + 50 * (days -30) as "Over Amount";
+else 
+SIGNAL out_of_bounds;
+end if;
+Select days as "days";
+end//
+
+call tdf('2003/09/27', '2003/10/10')//
+
+create table borrower(roll int, issue date, name varchar(20), status varchar(20))//
+insert into borrower(roll, issue, name, status) values
+(1, '2023/09/13', 'book4', 'borrowed'),
+(1, '2023/08/13', 'book3', 'borrowed'),
+(1, '2020/10/10', 'book1', 'borrowed'),
+(1, '2000/1/10', 'book2', 'borrowed'),
+(2, '2020/1/10', 'book1', 'borrowed'),
+(2, '2020/09/27', 'book3', 'borrowed')//
+
+
+create table fine(roll int, trik date,  amt int)//
+insert into fine(roll, trik, amt) values (1, '2004/11/11', 10)//
+select name, issue from borrower where name = 'book1' and roll = 1//
+
+drop procedure tdt//
+
+create procedure tdt(in n varchar(20), in r int)
+begin
+declare days int;
+declare issd date;
+declare isFine bit;
+
+DECLARE out_of_bounds CONDITION FOR SQLSTATE '22012';
+DECLARE CONTINUE HANDLER FOR out_of_bounds 
+RESIGNAL SET MESSAGE_TEXT = 'days negative';
+
+set isFine = 0;
+
+select issue into issd from borrower where roll = r and name = n;
+set days =  DATEDIFF(curdate(), issd);
+Select days as "days";
+
+if (days < 30 and days > 15) then
+select  5 * days as "Amount";
+elseif(days > 30) then
+select  5 * (days % 30) + 50 * (days -30) as "Over Amount";
+set isFine = 1;
+elseif(days < 15 and days >0) then
+select 0 as "Amount";
+elseif(days < 0) then
+SIGNAL out_of_bounds;
+end if;
+update borrower set status = "returned" where roll = r and name = n;
+if(isFine = 1) then 
+Select "Yes" as "Fine";
+else
+Select "No" as "Fine";
+end if;
+end//
+
+call tdt('book3', 1)//
