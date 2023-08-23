@@ -1,39 +1,22 @@
+delimiter //
+show procedure status where db = "te31282db"//
+create table area(radius double, area double)//
+
 drop procedure tcir//
 
-
-mysql> create procedure tcir(in radius int)
+create procedure tcir(in radius real)
 begin
-if(radius between 4 and 9) then
+DECLARE out_of_bounds CONDITION FOR SQLSTATE '22012';
+DECLARE CONTINUE HANDLER FOR out_of_bounds 
+RESIGNAL SET MESSAGE_TEXT = 'radius out of range';
+if (radius between 4 and 9) then
 insert into area(radius, area) values (radius, radius * radius * 3.14);
-select "Success" as Message;
+set radius = radius * radius * 3.14;
+select radius as area;
 else
-select "Error" as Message;
-endif;
+SIGNAL out_of_bounds;
+end if;
 end
 //
 
-
-create procedure tcir(in radius int)
-begin
-if (radius between 5 and 9) begin
-	select "Here" as message;
-end;
-insert into area(radius, area) values (radius, radius * radius * 3.14);
-select "Success" as Message;
-select * from area;
-end
-//
-
-
-create procedure tcir(in radius int)
-declare 
-not_in_range exception;
-begin
-insert into area(radius, area) values (radius, radius * radius * 3.14);
-select "Success" as Message;
-select * from area;
-exception
- when not_in_range then
- 	select "Do nada" from message;
-end
-//
+call tcir(4.5)//
