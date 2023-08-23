@@ -61,3 +61,61 @@ mysql> select * from area//
 +--------+--------+
 1 row in set (0.00 sec)
 
+mysql> create procedure tdf(in tdy date, in ltd date)
+    -> begin
+    -> declare days int;
+    -> 
+    -> DECLARE out_of_bounds CONDITION FOR SQLSTATE '22012';
+    -> DECLARE CONTINUE HANDLER FOR out_of_bounds 
+    -> RESIGNAL SET MESSAGE_TEXT = 'days negative';
+    -> 
+    -> set days = DATEDIFF(tdy, ltd);
+    -> if (days < 30 and days > 15) then
+    -> select  5 * days as "Amount";
+    -> elseif(days > 30) then
+    -> select  5 * (days % 30) + 50 * (days -30) as "Over Amount";
+    -> else 
+    -> SIGNAL out_of_bounds;
+    -> end if;
+    -> Select days as "days";
+    -> end//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> 
+mysql> call tdf('2003/09/27', '2003/10/10')//
+ERROR 1644 (22012): days negative
+mysql> call tdf('2003/09/27', '2003/1/10')//
++-------------+
+| Over Amount |
++-------------+
+|       11600 |
++-------------+
+1 row in set (0.00 sec)
+
++------+
+| days |
++------+
+|  260 |
++------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call tdf('2003/09/27', '2003/9/10')//
++--------+
+| Amount |
++--------+
+|     85 |
++--------+
+1 row in set (0.00 sec)
+
++------+
+| days |
++------+
+|   17 |
++------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> 
