@@ -1,22 +1,3 @@
-student@student-OptiPlex-3020:~/Desktop$ mysql -h 10.10.15.233 -u te31282 -p
-Enter password: 
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 107
-Server version: 5.5.43-MariaDB MariaDB Server
-
-Copyright (c) 2000, 2023, Oracle and/or its affiliates.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> use te31282db;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
 mysql> delimiter //
 
 mysql> create table area(radius double, area double)//
@@ -117,5 +98,132 @@ mysql> call tdf('2003/09/27', '2003/9/10')//
 1 row in set (0.00 sec)
 
 Query OK, 0 rows affected (0.00 sec)
+
+################################################################################
+create table borrower(roll int, issue date, name varchar(20), status varchar(20))//
+insert into borrower(roll, issue, name, status) values
+(1, '2023/09/13', 'book4', 'borrowed'),
+(1, '2023/08/13', 'book3', 'borrowed'),
+(1, '2020/10/10', 'book1', 'borrowed'),
+(1, '2000/1/10', 'book2', 'borrowed'),
+(2, '2020/1/10', 'book1', 'borrowed'),
+(2, '2020/09/27', 'book3', 'borrowed')//
+
+
+create table fine(roll int, trik date,  amt int)//
+insert into fine(roll, trik, amt) values (1, '2004/11/11', 10)//
+select name, issue from borrower where name = 'book1' and roll = 1//
+################################################################################
+mysql> create procedure tdt(in n varchar(20), in r int)
+    -> begin
+    -> declare days int;
+    -> declare issd date;
+    -> declare isFine bit;
+    -> 
+    -> DECLARE out_of_bounds CONDITION FOR SQLSTATE '22012';
+    -> DECLARE CONTINUE HANDLER FOR out_of_bounds 
+    -> RESIGNAL SET MESSAGE_TEXT = 'days negative';
+    -> 
+    -> set isFine = 0;
+    -> 
+    -> select issue into issd from borrower where roll = r and name = n;
+    -> set days =  DATEDIFF(curdate(), issd);
+    -> Select days as "days";
+    -> 
+    -> if (days < 30 and days > 15) then
+    -> select  5 * days as "Amount";
+    -> elseif(days > 30) then
+    -> select  5 * (days % 30) + 50 * (days -30) as "Over Amount";
+    -> insert into fine(roll, trik, amt) values (r, curdate(), 5 * (days % 30) + 50 * (days -30));
+    -> set isFine = 1;
+    -> elseif(days < 15 and days >0) then
+    -> select 0 as "Amount";
+    -> elseif(days < 0) then
+    -> SIGNAL out_of_bounds;
+    -> end if;
+    -> update borrower set status = "returned" where roll = r and name = n;
+    -> if(isFine = 1) then 
+    -> Select "Yes" as "Fine";
+    -> else
+    -> Select "No" as "Fine";
+    -> end if;
+    -> end//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> 
+mysql> call tdt('book3', 1)//
++------+
+| days |
++------+
+|   31 |
++------+
+1 row in set (0.00 sec)
+
++-------------+
+| Over Amount |
++-------------+
+|          55 |
++-------------+
+1 row in set (0.00 sec)
+
++------+
+| Fine |
++------+
+| Yes  |
++------+
+1 row in set (0.04 sec)
+
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> call tdt('book4', 1)//
++------+
+| days |
++------+
+|    0 |
++------+
+1 row in set (0.00 sec)
+
++------+
+| Fine |
++------+
+| No   |
++------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call tdt('book3', 2)//
++------+
+| days |
++------+
+| 1081 |
++------+
+1 row in set (0.00 sec)
+
++-------------+
+| Over Amount |
++-------------+
+|       52555 |
++-------------+
+1 row in set (0.00 sec)
+
++------+
+| Fine |
++------+
+| Yes  |
++------+
+1 row in set (0.02 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from fine//
++------+------------+-------+
+| roll | trik       | amt   |
++------+------------+-------+
+|    1 | 2004-11-11 |    10 |
+|    1 | 2023-09-13 |    55 |
+|    2 | 2023-09-13 | 52555 |
++------+------------+-------+
+3 rows in set (0.00 sec)
 
 mysql> 
