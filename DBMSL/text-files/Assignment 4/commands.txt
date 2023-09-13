@@ -78,6 +78,7 @@ if (days < 30 and days > 15) then
 select  5 * days as "Amount";
 elseif(days > 30) then
 select  5 * (days % 30) + 50 * (days -30) as "Over Amount";
+insert into fine(roll, trik, amt) values (r, curdate(), 5 * (days % 30) + 50 * (days -30));
 set isFine = 1;
 elseif(days < 15 and days >0) then
 select 0 as "Amount";
